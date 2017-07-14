@@ -6,12 +6,15 @@ var http = require("http"),
 
 http.createServer(function(request, response) {
 
+  //console.log(request.url);
+
   var uri = url.parse(request.url).pathname
     , filename = path.join(process.cwd(), uri);
 
   var contentTypesByExtension = {
     '.html': "text/html",
     '.css':  "text/css",
+    '.less':  "text/css",
     '.js':   "text/javascript"
   };
 

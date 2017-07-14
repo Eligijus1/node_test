@@ -1,12 +1,17 @@
 angular.module('project', ['ngRoute', 'firebase'])
  
-.value('fbURL', 'https://ng-projects-list.firebaseio.com/')
+.value('fbURL', 'https://ng-projects-list-637ee.firebaseapp.com')
+
 .service('fbRef', function(fbURL) {
+  console.debug('service fbRef');
   return new Firebase(fbURL)
 })
+
 .service('fbAuth', function($q, $firebase, $firebaseAuth, fbRef) {
+  console.debug('service fbAuth');
   var auth;
   return function () {
+      
       if (auth) return $q.when(auth);
       var authObj = $firebaseAuth(fbRef);
       if (authObj.$getAuth()) {
@@ -22,6 +27,7 @@ angular.module('project', ['ngRoute', 'firebase'])
 })
  
 .service('Projects', function($q, $firebase, fbRef, fbAuth, projectListValue) {
+  console.debug('service Projects');
   var self = this;
   this.fetch = function () {
     if (this.projects) return $q.when(this.projects);
@@ -45,11 +51,16 @@ angular.module('project', ['ngRoute', 'firebase'])
 })
  
 .config(function($routeProvider) {
+  console.debug('config', $routeProvider);
+
   var resolveProjects = {
     projects: function (Projects) {
+      console.debug('config.Projects', Projects);
       return Projects.fetch();
     }
   };
+  
+  console.debug('config.resolveProjects', resolveProjects);
  
   $routeProvider
     .when('/angular/', {
@@ -70,9 +81,12 @@ angular.module('project', ['ngRoute', 'firebase'])
     .otherwise({
       redirectTo:'/'
     });
+    
+  console.debug('config.routeProvider', $routeProvider);
 })
  
 .controller('ProjectListController', function(projects) {
+  console.debug('ProjectListController');
   var projectList = this;
   projectList.projects = projects;
 })
