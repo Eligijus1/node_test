@@ -1,17 +1,14 @@
 angular.module('project', ['ngRoute', 'firebase'])
- 
-.value('fbURL', 'https://ng-projects-list-637ee.firebaseapp.com')
-
+.value('fbURL', 'https://ng-projects-list.firebaseio.com/')
 .service('fbRef', function(fbURL) {
-  console.debug('service fbRef');
+  console.debug('service fbRef. fbURL=', fbURL);
   return new Firebase(fbURL)
 })
-
 .service('fbAuth', function($q, $firebase, $firebaseAuth, fbRef) {
   console.debug('service fbAuth');
   var auth;
   return function () {
-      
+      console.debug('service fbAuth return');
       if (auth) return $q.when(auth);
       var authObj = $firebaseAuth(fbRef);
       if (authObj.$getAuth()) {
@@ -51,8 +48,6 @@ angular.module('project', ['ngRoute', 'firebase'])
 })
  
 .config(function($routeProvider) {
-  console.debug('config', $routeProvider);
-
   var resolveProjects = {
     projects: function (Projects) {
       console.debug('config.Projects', Projects);
@@ -63,7 +58,7 @@ angular.module('project', ['ngRoute', 'firebase'])
   console.debug('config.resolveProjects', resolveProjects);
  
   $routeProvider
-    .when('/angular/', {
+    .when('/', {
       controller:'ProjectListController as projectList',
       templateUrl:'test3_list.html',
       resolve: resolveProjects
@@ -92,6 +87,7 @@ angular.module('project', ['ngRoute', 'firebase'])
 })
  
 .controller('NewProjectController', function($location, projects) {
+console.debug('NewProjectController');
   var editProject = this;
   editProject.save = function() {
       projects.$add(editProject.project).then(function(data) {
@@ -102,6 +98,7 @@ angular.module('project', ['ngRoute', 'firebase'])
  
 .controller('EditProjectController',
   function($location, $routeParams, projects) {
+    console.debug('EditProjectController');
     var editProject = this;
     var projectId = $routeParams.projectId,
         projectIndex;
